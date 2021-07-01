@@ -6,7 +6,7 @@ import com.billyluisneedham.bbctest.retrofit.Service
 class FruitRepository(private val service: Service) {
 
     suspend fun getFruits(): List<FruitResponse> {
-        return service.getFruits()
+        return service.getFruits().fruits
     }
 
     companion object {
