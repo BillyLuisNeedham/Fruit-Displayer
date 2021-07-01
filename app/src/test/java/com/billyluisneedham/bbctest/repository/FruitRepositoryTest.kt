@@ -21,7 +21,7 @@ class FruitRepositoryTest {
 
             coEvery {
                 mockService.getFruits()
-            } returns MockFruit.listOfMockFruitResponse
+            } returns MockFruit.mockFruitListResponse
 
             fruitRepository = FruitRepository(mockService)
 
@@ -40,7 +40,7 @@ class FruitRepositoryTest {
 
             coEvery {
                 mockService.getFruits()
-            } returns MockFruit.listOfMockFruitResponse
+            } returns MockFruit.mockFruitListResponse
 
             fruitRepository = FruitRepository(mockService)
 
