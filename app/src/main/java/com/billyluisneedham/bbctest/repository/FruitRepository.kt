@@ -2,12 +2,11 @@ package com.billyluisneedham.bbctest.repository
 
 import com.billyluisneedham.bbctest.models.FruitResponse
 import com.billyluisneedham.bbctest.retrofit.Service
-import javax.inject.Inject
 
-class FruitRepository @Inject constructor(private val service: Service) {
+class FruitRepository(private val service: Service) {
 
     suspend fun getFruits(): List<FruitResponse> {
-        return service.getFruits()
+        return service.getFruits().fruits
     }
 
     companion object {
