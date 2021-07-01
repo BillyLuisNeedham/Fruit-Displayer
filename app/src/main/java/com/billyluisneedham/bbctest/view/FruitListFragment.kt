@@ -4,20 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.billyluisneedham.bbctest.databinding.FragmentListBinding
+import com.billyluisneedham.bbctest.di.DependencyInjector
 import com.billyluisneedham.bbctest.viewmodel.FruitListViewModel
-import dagger.android.support.DaggerFragment
-import javax.inject.Inject
+import kotlinx.coroutines.launch
 
-class FruitListFragment: DaggerFragment() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(FruitListViewModel::class.java)
-    }
+class FruitListFragment: Fragment() {
+
     private lateinit var binding: FragmentListBinding
+    private val viewModel: FruitListViewModel by viewModels {
+        FruitListViewModel.Factory(
+            DependencyInjector.getFruitRepository()
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,7 +32,12 @@ class FruitListFragment: DaggerFragment() {
             binding = this
         }
 
-        binding.tvTEST.text = viewModel.someString
+        viewLifecycleOwner.lifecycleScope.launch {
+            val repo = DependencyInjector.getFruitRepository()
+            val list = repo.getFruits()
+            val text = list.toString()
+        binding.tvTEST.text = text
+        }
 
         return binding.root
     }
