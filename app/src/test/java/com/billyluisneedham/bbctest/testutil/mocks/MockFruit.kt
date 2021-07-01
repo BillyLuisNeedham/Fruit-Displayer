@@ -1,5 +1,6 @@
 package com.billyluisneedham.bbctest.testutil.mocks
 
+import com.billyluisneedham.bbctest.models.FruitListResponse
 import com.billyluisneedham.bbctest.models.FruitResponse
 
 class MockFruit {
@@ -16,5 +17,7 @@ class MockFruit {
         )
 
         val listOfMockFruitResponse = listOf(mockFruitResponse)
+
+        val mockFruitListResponse = FruitListResponse(fruits = listOfMockFruitResponse)
     }
 }
