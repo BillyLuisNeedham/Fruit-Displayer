@@ -30,4 +30,6 @@ abstract class FruitDatabase : RoomDatabase() {
             instance
         }
     }
+
+    abstract fun getFruitDao(): FruitDao
 }
