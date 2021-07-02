@@ -12,6 +12,9 @@ interface FruitDao {
     @Insert(onConflict = REPLACE)
     suspend fun insertAll(fruits: List<Fruit>)
 
+    @Query("SELECT * FROM Fruit")
+    suspend fun getAll(): List<Fruit>
+
     @Query("DELETE From Fruit")
     suspend fun deleteAll()
 }
