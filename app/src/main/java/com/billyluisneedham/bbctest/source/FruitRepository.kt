@@ -12,10 +12,10 @@ class FruitRepository(private val service: Service) {
     companion object {
 
         @Volatile
-        private var instance: FruitRepository? = null
+        private var INSTANCE: FruitRepository? = null
 
-        fun getInstance(service: Service) = instance ?: synchronized(this) {
-            instance ?: FruitRepository(service).also { instance = it }
+        fun getInstance(service: Service) = INSTANCE ?: synchronized(this) {
+            INSTANCE ?: FruitRepository(service).also { INSTANCE = it }
         }
     }
 }
