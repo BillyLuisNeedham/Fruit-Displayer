@@ -2,7 +2,7 @@ package com.billyluisneedham.bbctest.repository
 
 import com.billyluisneedham.bbctest.source.FruitRepository
 import com.billyluisneedham.bbctest.source.remote.service.Service
-import com.billyluisneedham.bbctest.testutil.mocks.MockFruit
+import com.billyluisneedham.bbctest.testutil.mocks.MockFruitUnit
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -22,7 +22,7 @@ class FruitRepositoryTest {
 
             coEvery {
                 mockService.getFruits()
-            } returns MockFruit.mockFruitListResponse
+            } returns MockFruitUnit.mockFruitListResponse
 
             fruitRepository = FruitRepository(mockService)
 
@@ -41,13 +41,13 @@ class FruitRepositoryTest {
 
             coEvery {
                 mockService.getFruits()
-            } returns MockFruit.mockFruitListResponse
+            } returns MockFruitUnit.mockFruitListResponse
 
             fruitRepository = FruitRepository(mockService)
 
             val response = fruitRepository.getFruits()
 
-            assertThat(response, `is`(MockFruit.listOfMockFruitResponse))
+            assertThat(response, `is`(MockFruitUnit.listOfMockFruitResponse))
         }
     }
 }
