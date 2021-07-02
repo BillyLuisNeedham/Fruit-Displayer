@@ -1,7 +1,10 @@
 package com.billyluisneedham.bbctest.ui.fruitlist
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
+import com.billyluisneedham.bbctest.models.Fruit
 import com.billyluisneedham.bbctest.source.FruitRepository
 
 class FruitListViewModel(private val fruitRepository: FruitRepository) : ViewModel() {
@@ -10,6 +13,7 @@ class FruitListViewModel(private val fruitRepository: FruitRepository) : ViewMod
         private const val TAG = "FruitListViewModel"
     }
 
+    val fruitList: LiveData<List<Fruit>> = fruitRepository.getFruits().asLiveData()
 
 
     class Factory(private val fruitRepository: FruitRepository) : ViewModelProvider.Factory {
@@ -20,3 +24,5 @@ class FruitListViewModel(private val fruitRepository: FruitRepository) : ViewMod
     }
 
 }
+
+
