@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import com.billyluisneedham.bbctest.testutil.mocks.MockFruit
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers.`is`
 import org.junit.After
@@ -38,7 +39,9 @@ class FruitDatabaseTest {
 
         fruitDao.insertAll(fruit)
 
-        val result = fruitDao.getAll()
+        val flow = fruitDao.getAll()
+        val result = flow.first()
+
         assertThat(result[0], `is`(expectedFruitWithIncrementedId))
     }
 
