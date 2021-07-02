@@ -37,9 +37,9 @@ class FruitDatabaseTest {
         val fruit = listOf(MockFruit.mockFruit)
         val expectedFruitWithIncrementedId = MockFruit.mockFruit.copy(fruitId = 1)
 
-        fruitDao.insertAll(fruit)
+        fruitDao.saveFruits(fruit)
 
-        val flow = fruitDao.getAll()
+        val flow = fruitDao.getAllFruits()
         val result = flow.first()
         assertThat(result[0], `is`(expectedFruitWithIncrementedId))
     }
@@ -50,17 +50,17 @@ class FruitDatabaseTest {
         val fruit = listOf(MockFruit.mockFruit)
 
         //confirm table is empty
-        val initialTableSize: Int = fruitDao.getAll().first().size
+        val initialTableSize: Int = fruitDao.getAllFruits().first().size
         assertThat(initialTableSize, `is`(0))
 
         //add to table and confirm it adds row
-        fruitDao.insertAll(fruit)
-        val tableSizePostInsert: Int = fruitDao.getAll().first().size
+        fruitDao.saveFruits(fruit)
+        val tableSizePostInsert: Int = fruitDao.getAllFruits().first().size
         assertThat(tableSizePostInsert, `is`(1))
 
         //delete table and confirm the size returns to empty
         fruitDao.deleteAll()
-        val tableSizePostDelete: Int = fruitDao.getAll().first().size
+        val tableSizePostDelete: Int = fruitDao.getAllFruits().first().size
         assertThat(tableSizePostDelete, `is`(0))
 
 

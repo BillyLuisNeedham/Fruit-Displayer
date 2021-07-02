@@ -5,16 +5,17 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.billyluisneedham.bbctest.models.Fruit
+import com.billyluisneedham.bbctest.source.local.LocalFruitDataSource
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface FruitDao {
+interface FruitDao: LocalFruitDataSource {
 
     @Insert(onConflict = REPLACE)
-    suspend fun insertAll(fruits: List<Fruit>)
+    override suspend fun saveFruits(fruits: List<Fruit>)
 
     @Query("SELECT * FROM Fruit")
-    fun getAll(): Flow<List<Fruit>>
+    override fun getAllFruits(): Flow<List<Fruit>>
 
     @Query("DELETE From Fruit")
     suspend fun deleteAll()
