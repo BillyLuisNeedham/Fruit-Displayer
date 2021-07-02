@@ -1,4 +1,4 @@
-package com.billyluisneedham.bbctest.retrofit
+package com.billyluisneedham.bbctest.source.remote.service
 
 import com.billyluisneedham.bbctest.BuildConfig
 import okhttp3.OkHttpClient

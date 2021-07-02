@@ -1,10 +1,15 @@
 package com.billyluisneedham.bbctest.repository
 
-import com.billyluisneedham.bbctest.retrofit.Service
-import com.billyluisneedham.bbctest.testutil.mocks.MockFruit
+import com.billyluisneedham.bbctest.mocks.MockFruit
+import com.billyluisneedham.bbctest.source.FruitRepository
+import com.billyluisneedham.bbctest.source.local.database.FruitDao
+import com.billyluisneedham.bbctest.source.remote.service.Service
+import com.billyluisneedham.bbctest.utils.toModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -13,40 +18,66 @@ import org.junit.Test
 class FruitRepositoryTest {
 
     private val mockService = mockk<Service>()
+    private val mockDao = mockk<FruitDao>()
     private lateinit var fruitRepository: FruitRepository
+    private val mockFruits = listOf(MockFruit.mockFruit)
+
+    private fun initFruitRepositoryForTest() {
+        fruitRepository = FruitRepository(
+            localFruitDataSource = mockDao,
+            remoteFruitDataSource = mockService
+        )
+    }
+
+    private fun initMocksForSuccessfulFetch() {
+        val mappedFruitResponse = MockFruit.mockFruitListResponse.fruits.map {
+            it.toModel()
+        }
+
+        val flow = flow {
+            emit(mockFruits)
+        }
+        coEvery {
+            mockService.getFruits()
+        } returns MockFruit.mockFruitListResponse
+
+        coEvery {
+            mockDao.getAllFruits()
+        } returns flow
+
+        coEvery {
+            mockDao.saveFruits(mappedFruitResponse)
+        } returns Unit
+    }
 
     @Test
-    fun getFruitCallsCorrectMethodInService() {
+    fun getAllFruitInsertsFruitsFromRemoteServiceToLocalDb() {
         runBlocking {
+            val mappedFruitResponse = MockFruit.mockFruitListResponse.fruits.map {
+                it.toModel()
+            }
+            initMocksForSuccessfulFetch()
+            initFruitRepositoryForTest()
 
-            coEvery {
-                mockService.getFruits()
-            } returns MockFruit.mockFruitListResponse
-
-            fruitRepository = FruitRepository(mockService)
 
             fruitRepository.getFruits()
 
             coVerify(exactly = 1) {
-                mockService.getFruits()
+                mockDao.saveFruits(mappedFruitResponse)
             }
 
         }
     }
 
     @Test
-    fun getFruitCallsReturnsAListOfFruitResponseFromService() {
+    fun getAllFruitCallsReturnsAFlowOfListOfFruitFromDb() {
         runBlocking {
+            initMocksForSuccessfulFetch()
+            initFruitRepositoryForTest()
 
-            coEvery {
-                mockService.getFruits()
-            } returns MockFruit.mockFruitListResponse
+            val response = fruitRepository.getFruits().first()
 
-            fruitRepository = FruitRepository(mockService)
-
-            val response = fruitRepository.getFruits()
-
-            assertThat(response, `is`(MockFruit.listOfMockFruitResponse))
+            assertThat(response, `is`(mockFruits))
         }
     }
 }
