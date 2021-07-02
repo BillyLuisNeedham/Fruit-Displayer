@@ -1,8 +1,9 @@
-package com.billyluisneedham.bbctest.view
+package com.billyluisneedham.bbctest.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.billyluisneedham.bbctest.R
+import com.billyluisneedham.bbctest.ui.fruitlist.FruitListFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

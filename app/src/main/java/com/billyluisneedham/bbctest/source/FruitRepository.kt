@@ -1,7 +1,7 @@
-package com.billyluisneedham.bbctest.repository
+package com.billyluisneedham.bbctest.source
 
 import com.billyluisneedham.bbctest.models.FruitResponse
-import com.billyluisneedham.bbctest.retrofit.Service
+import com.billyluisneedham.bbctest.source.remote.service.Service
 
 class FruitRepository(private val service: Service) {
 
@@ -10,6 +10,7 @@ class FruitRepository(private val service: Service) {
     }
 
     companion object {
+
         @Volatile
         private var instance: FruitRepository? = null
 

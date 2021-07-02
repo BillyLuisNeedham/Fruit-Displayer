@@ -1,6 +1,7 @@
 package com.billyluisneedham.bbctest.repository
 
-import com.billyluisneedham.bbctest.retrofit.Service
+import com.billyluisneedham.bbctest.source.FruitRepository
+import com.billyluisneedham.bbctest.source.remote.service.Service
 import com.billyluisneedham.bbctest.testutil.mocks.MockFruit
 import io.mockk.coEvery
 import io.mockk.coVerify

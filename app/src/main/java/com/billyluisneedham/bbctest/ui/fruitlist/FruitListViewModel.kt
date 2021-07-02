@@ -1,8 +1,8 @@
-package com.billyluisneedham.bbctest.viewmodel
+package com.billyluisneedham.bbctest.ui.fruitlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.billyluisneedham.bbctest.repository.FruitRepository
+import com.billyluisneedham.bbctest.source.FruitRepository
 
 class FruitListViewModel(private val fruitRepository: FruitRepository) : ViewModel() {
 

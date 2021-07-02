@@ -1,4 +1,4 @@
-package com.billyluisneedham.bbctest.view
+package com.billyluisneedham.bbctest.ui.fruitlist
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.billyluisneedham.bbctest.databinding.FragmentListBinding
 import com.billyluisneedham.bbctest.di.DependencyInjector
-import com.billyluisneedham.bbctest.viewmodel.FruitListViewModel
 import kotlinx.coroutines.launch
 
 
