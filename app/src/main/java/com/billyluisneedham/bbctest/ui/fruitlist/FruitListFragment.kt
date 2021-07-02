@@ -48,7 +48,9 @@ class FruitListFragment(
     }
 
     private fun observeFruitListInViewModel() {
-        TODO("Not yet implemented")
+        viewModel.fruitList.observe(viewLifecycleOwner, {
+            adapter.submitList(it)
+        })
     }
 
 
