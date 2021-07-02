@@ -3,7 +3,7 @@ package com.billyluisneedham.bbctest.testutil.mocks
 import com.billyluisneedham.bbctest.models.FruitListResponse
 import com.billyluisneedham.bbctest.models.FruitResponse
 
-class MockFruit {
+class MockFruitUnit {
 
     companion object {
         const val MOCK_TYPE = "apple"
@@ -19,5 +19,7 @@ class MockFruit {
         val listOfMockFruitResponse = listOf(mockFruitResponse)
 
         val mockFruitListResponse = FruitListResponse(fruits = listOfMockFruitResponse)
+
+
     }
 }
