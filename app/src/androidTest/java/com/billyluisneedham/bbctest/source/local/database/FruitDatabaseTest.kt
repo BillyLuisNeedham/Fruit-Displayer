@@ -35,6 +35,7 @@ class FruitDatabaseTest {
     fun writeFruitAndReadInList() = runBlocking {
         val fruit = listOf(MockFruit.mockFruit)
         val expectedFruitWithIncrementedId = MockFruit.mockFruit.copy(fruitId = 1)
+
         fruitDao.insertAll(fruit)
 
         val result = fruitDao.getAll()
