@@ -1,5 +1,6 @@
 package com.billyluisneedham.bbctest.repository
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.billyluisneedham.bbctest.mocks.MockFruit
 import com.billyluisneedham.bbctest.source.FruitRepository
 import com.billyluisneedham.bbctest.source.local.database.FruitDao
@@ -13,9 +14,13 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Rule
 import org.junit.Test
 
 class FruitRepositoryTest {
+
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
 
     private val mockService = mockk<Service>()
     private val mockDao = mockk<FruitDao>()
