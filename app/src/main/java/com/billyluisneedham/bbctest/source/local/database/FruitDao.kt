@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.billyluisneedham.bbctest.models.Fruit
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FruitDao {
@@ -13,7 +14,7 @@ interface FruitDao {
     suspend fun insertAll(fruits: List<Fruit>)
 
     @Query("SELECT * FROM Fruit")
-    suspend fun getAll(): List<Fruit>
+    fun getAll(): Flow<List<Fruit>>
 
     @Query("DELETE From Fruit")
     suspend fun deleteAll()
