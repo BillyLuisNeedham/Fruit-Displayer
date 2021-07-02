@@ -4,9 +4,8 @@ import com.billyluisneedham.bbctest.models.Fruit
 import com.billyluisneedham.bbctest.source.local.LocalFruitDataSource
 import com.billyluisneedham.bbctest.source.remote.RemoteFruitDataSource
 import com.billyluisneedham.bbctest.utils.toModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.onStart
 
 class FruitRepository(
     private val localFruitDataSource: LocalFruitDataSource,
@@ -30,11 +29,8 @@ class FruitRepository(
         }
     }
 
-    suspend fun getFruits(): Flow<List<Fruit>> {
-        withContext(Dispatchers.IO) {
-            refreshFruits()
-        }
-        return localFruitDataSource.getAllFruits()
+    fun getFruits(): Flow<List<Fruit>> = localFruitDataSource.getAllFruits().onStart {
+        refreshFruits()
     }
 
     private suspend fun refreshFruits() {
