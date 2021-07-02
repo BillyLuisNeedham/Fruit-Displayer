@@ -1,9 +1,15 @@
 package com.billyluisneedham.bbctest.source.local.database
 
 import android.content.Context
+import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.billyluisneedham.bbctest.models.Fruit
 
+@Database(
+    entities = [Fruit::class],
+    version = 1
+)
 abstract class FruitDatabase : RoomDatabase() {
 
     companion object {
