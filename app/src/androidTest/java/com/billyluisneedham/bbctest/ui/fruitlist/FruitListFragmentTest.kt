@@ -20,7 +20,6 @@ class FruitListFragmentTest {
     private val mockFruitRepository = mockk<FruitRepository>()
 
 
-
     @Test
     fun displaysTypeOfFruit_fruitListReturnedSuccessfullyByRepository_typeOfFruitIsDisplayedToTheUser() {
         initMockSuccessfulResourceFetchedFromRepo()
@@ -84,6 +83,21 @@ class FruitListFragmentTest {
 
     @Test
     fun showErrorMessage_fruitListReturnedFromRepositoryIsError_errorUiIsDisplayedToUserWithPassedMessage() {
+        val testErrorMessage = "test error message"
+        val errorResponse = Resource.error(
+            message = testErrorMessage, data = listOf<Fruit>()
+        )
+        val liveDataResponse = MutableLiveData(errorResponse)
 
+        coEvery { mockFruitRepository.getFruits() } returns liveDataResponse
+
+        val fruitListFragment = FruitListFragment(mockFruitRepository)
+        launchFragmentInContainer {
+            fruitListFragment
+        }
+
+        onView(withId(R.id.tvErrorMsg))
+            .check(matches(isDisplayed()))
+            .check(matches(withSubstring(testErrorMessage)))
     }
 }

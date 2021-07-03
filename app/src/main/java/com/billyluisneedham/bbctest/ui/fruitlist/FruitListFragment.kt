@@ -52,12 +52,24 @@ class FruitListFragment(
     private fun observeFruitListInViewModel() {
         viewModel.fruitList.observe(viewLifecycleOwner, {
             setLoadingUiIsVisible(false)
+            setErrorUiVisibilityAndMessage(isVisible = false, message = null)
             when (it.status) {
                 Resource.Status.LOADING -> setLoadingUiIsVisible(true)
                 Resource.Status.SUCCESS -> adapter.submitList(it.data)
-                Resource.Status.ERROR -> TODO()
+                Resource.Status.ERROR -> setErrorUiVisibilityAndMessage(
+                    isVisible = true,
+                    message = it.message
+                )
             }
         })
+    }
+
+    private fun setErrorUiVisibilityAndMessage(isVisible: Boolean, message: String?) {
+        binding.tvErrorMsg.apply {
+            this.isVisible = isVisible
+            text = message
+        }
+
     }
 
 
