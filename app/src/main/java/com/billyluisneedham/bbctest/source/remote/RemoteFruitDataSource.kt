@@ -1,8 +1,8 @@
 package com.billyluisneedham.bbctest.source.remote
 
-import com.billyluisneedham.bbctest.models.FruitListResponse
+import com.billyluisneedham.bbctest.source.remote.service.Service
 
-interface RemoteFruitDataSource {
+class RemoteFruitDataSource(private val service: Service): BaseDataSource(), IRemoteFruitDataSource {
 
-    suspend fun getFruits(): FruitListResponse
+    override suspend fun getFruits() = getResult { service.getFruits() }
 }
