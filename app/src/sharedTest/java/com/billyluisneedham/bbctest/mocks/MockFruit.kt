@@ -6,9 +6,9 @@ import com.billyluisneedham.bbctest.models.FruitResponse
 
 object MockFruit {
 
-    const val MOCK_TYPE = "apple"
-    const val MOCK_WEIGHT = 800
-    const val MOCK_PRICE = 120
+    private const val MOCK_TYPE = "apple"
+    private const val MOCK_WEIGHT = 800
+    private const val MOCK_PRICE = 120
 
     val mockFruitResponse = FruitResponse(
         type = MOCK_TYPE,
@@ -25,6 +25,5 @@ object MockFruit {
     private val listOfMockFruitResponse = listOf(mockFruitResponse)
 
     val mockFruitListResponse = FruitListResponse(fruits = listOfMockFruitResponse)
-
 
 }
