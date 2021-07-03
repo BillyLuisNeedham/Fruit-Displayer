@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.billyluisneedham.bbctest.databinding.FragmentListBinding
 import com.billyluisneedham.bbctest.source.FruitRepository
 import com.billyluisneedham.bbctest.utils.DependencyInjector
+import com.billyluisneedham.bbctest.utils.Resource
 
 
 class FruitListFragment(
@@ -49,8 +51,18 @@ class FruitListFragment(
 
     private fun observeFruitListInViewModel() {
         viewModel.fruitList.observe(viewLifecycleOwner, {
-            adapter.submitList(it)
+            setLoadingUiIsVisible(false)
+            when (it.status) {
+                Resource.Status.LOADING -> setLoadingUiIsVisible(true)
+                Resource.Status.SUCCESS -> adapter.submitList(it.data)
+                Resource.Status.ERROR -> TODO()
+            }
         })
+    }
+
+
+    private fun setLoadingUiIsVisible(isVisible: Boolean) {
+        binding.loadingUi.isVisible = isVisible
     }
 
 
