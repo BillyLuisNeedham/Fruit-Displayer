@@ -5,6 +5,10 @@ import com.billyluisneedham.bbctest.utils.Resource
 import retrofit2.Response
 
 abstract class BaseDataSource {
+    companion object {
+        private const val REMOTE_DATA_SOURCE = "remoteDataSource"
+        const val ERROR_MESSAGE = "Network call has failed because: "
+    }
 
     protected suspend fun <T> getResult(call: suspend () -> Response<T>): Resource<T> {
         try {
@@ -21,6 +25,6 @@ abstract class BaseDataSource {
 
     private fun <T> error(message: String): Resource<T> {
         Log.e("remoteDataSource", message)
-        return Resource.error("Network call has failed because: $message")
+        return Resource.error("$ERROR_MESSAGE$message")
     }
 }
