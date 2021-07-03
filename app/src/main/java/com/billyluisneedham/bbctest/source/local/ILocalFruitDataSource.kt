@@ -1,12 +1,12 @@
 
 package com.billyluisneedham.bbctest.source.local
 
+import androidx.lifecycle.LiveData
 import com.billyluisneedham.bbctest.models.Fruit
-import kotlinx.coroutines.flow.Flow
 
-interface LocalFruitDataSource {
+interface ILocalFruitDataSource {
 
-    fun getAllFruits(): Flow<List<Fruit>>
+    fun getAllFruits(): LiveData<List<Fruit>>
 
     suspend fun saveFruits(fruits: List<Fruit>)
 }
