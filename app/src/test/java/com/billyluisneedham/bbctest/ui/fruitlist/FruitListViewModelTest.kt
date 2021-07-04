@@ -18,20 +18,20 @@ class FruitListViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
     private val mockFruitRepository = mockk<FruitRepository>()
-    private lateinit var fruitListViewModel: FruitListViewModel
+    private val fruitListResource = Resource.success(listOf(MockFruit.mockFruit))
+
 
 
     @Test
     fun fruitListLoadsOnInit_liveDataOfFruitListWrappedInResultReturnedByFruitRepository_fruitListFromRepositoryLoadedOnInitOfViewModel() {
         runBlocking {
-            val fruitListResource = Resource.success(listOf(MockFruit.mockFruit))
             val liveDataFruit = MutableLiveData(fruitListResource)
 
             coEvery {
                 mockFruitRepository.getFruits()
             } returns liveDataFruit
 
-            fruitListViewModel = FruitListViewModel(mockFruitRepository)
+            val fruitListViewModel = FruitListViewModel(mockFruitRepository)
 
 
             fruitListViewModel.fruitList.observeForever {}
@@ -39,6 +39,30 @@ class FruitListViewModelTest {
 
             assertThat(fruitListViewModel.fruitList.value, `is`(fruitListResource))
         }
+    }
+
+    @Test
+    fun refresh_resultsReturnedOnInitialGetFruitAndSecondGetFruitCallDifferent_differentResultsAreReturnedToViewModel() {
+        val testType = "test"
+        val secondFruit = MockFruit.mockFruit.copy(fruitId = 3, type=testType)
+        val secondFruitListResponse = Resource.success(listOf(secondFruit))
+        val liveDataFruit = MutableLiveData(fruitListResource)
+        val secondLiveDataFruit = MutableLiveData(secondFruitListResponse)
+
+        coEvery {
+            mockFruitRepository.getFruits()
+        } returns liveDataFruit andThen secondLiveDataFruit
+
+        val fruitListViewModel = FruitListViewModel(mockFruitRepository)
+
+        fruitListViewModel.fruitList.observeForever {}
+
+        assertThat(fruitListViewModel.fruitList.value, `is`(fruitListResource))
+
+        fruitListViewModel.refreshFruits()
+
+        assertThat(fruitListViewModel.fruitList.value, `is`(secondFruitListResponse))
+
     }
 
 }
