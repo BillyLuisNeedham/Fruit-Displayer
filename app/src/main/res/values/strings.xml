@@ -2,4 +2,8 @@
     <string name="app_name">BBC test</string>
     <string name="error_message">An error occurred:</string>
     <string name="refresh">Refresh</string>
+    <string name="weight">Weight:</string>
+    <string name="price">Price:</string>
+    <string name="kg">kg</string>
+    <string name="pounds">£</string>
 </resources>
