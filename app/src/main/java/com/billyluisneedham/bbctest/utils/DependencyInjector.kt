@@ -25,8 +25,8 @@ object DependencyInjector {
         return RemoteFruitDataSource.newInstance(provideService())
     }
 
-    private fun provideService(): Service = RetrofitClient.service
+    internal fun provideService(): Service = RetrofitClient.service
 
-    private fun provideSendDiagnosticManager() = SendDiagnosticManager(provideService())
+    private fun provideSendDiagnosticManager() = SendDiagnosticManager.newInstance(provideService())
 
 }

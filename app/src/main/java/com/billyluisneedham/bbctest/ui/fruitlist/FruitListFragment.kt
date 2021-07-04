@@ -5,12 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.billyluisneedham.bbctest.R
 import com.billyluisneedham.bbctest.databinding.FragmentListBinding
 import com.billyluisneedham.bbctest.models.Fruit
 import com.billyluisneedham.bbctest.source.FruitRepository
+import com.billyluisneedham.bbctest.ui.DiagnosticFragment
+import com.billyluisneedham.bbctest.ui.MainActivity
 import com.billyluisneedham.bbctest.ui.fruitdetail.FruitDetailFragment
 import com.billyluisneedham.bbctest.utils.DependencyInjector
 import com.billyluisneedham.bbctest.utils.Resource
@@ -19,7 +20,7 @@ import com.billyluisneedham.bbctest.utils.Resource
 class FruitListFragment(
     // used for test injection
     private val fruitRepository: FruitRepository? = null
-) : Fragment(), FruitListAdapter.IFruitListViewHolderCallbacks {
+) : DiagnosticFragment(), FruitListAdapter.IFruitListViewHolderCallbacks {
 
     companion object {
         private const val ERROR_MESSAGE = R.string.error_message
@@ -94,6 +95,8 @@ class FruitListFragment(
     }
 
     override fun onClickFruitViewHolder(fruit: Fruit) {
+        (requireActivity() as MainActivity).onRequestChangeOfUi(System.currentTimeMillis())
+
         requireActivity().supportFragmentManager.beginTransaction()
             .add(R.id.flMainActivity, FruitDetailFragment.newInstance(fruit))
             .addToBackStack(null)

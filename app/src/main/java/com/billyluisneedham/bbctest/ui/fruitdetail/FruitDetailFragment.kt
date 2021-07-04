@@ -4,15 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.billyluisneedham.bbctest.R
 import com.billyluisneedham.bbctest.databinding.FragmentDetailBinding
 import com.billyluisneedham.bbctest.models.Fruit
+import com.billyluisneedham.bbctest.ui.DiagnosticFragment
 import com.billyluisneedham.bbctest.utils.capitalise
 import java.text.NumberFormat
 import java.util.*
 
-class FruitDetailFragment : Fragment() {
+class FruitDetailFragment : DiagnosticFragment() {
 
     companion object {
         private const val WEIGHT_STRING = R.string.weight
