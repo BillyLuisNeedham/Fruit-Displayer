@@ -12,6 +12,7 @@ import com.billyluisneedham.bbctest.mocks.MockFruit
 import com.billyluisneedham.bbctest.models.Fruit
 import com.billyluisneedham.bbctest.source.FruitRepository
 import com.billyluisneedham.bbctest.utils.Resource
+import com.billyluisneedham.bbctest.utils.capitalise
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.hamcrest.CoreMatchers.not
@@ -39,7 +40,7 @@ class FruitListFragmentTest {
             fruitListFragment
         }
 
-        onView(withText(MockFruit.mockFruit.type))
+        onView(withText(MockFruit.mockFruit.type.capitalise()))
             .check(matches(isDisplayed()))
     }
 
@@ -115,7 +116,7 @@ class FruitListFragmentTest {
     fun refreshButton_refreshButtonClickedRepositoryReturnsDifferentDataOnSecondGetFruitCall_latestDataDisplayedInUi() {
         val fruitListResponse = Resource.success(listOf(MockFruit.mockFruit))
         val liveDataResponse = MutableLiveData(fruitListResponse)
-        val testType = "test type"
+        val testType = "Test Type"
         val secondFruit = MockFruit.mockFruit.copy(fruitId = 4, type = testType)
         val secondFruitListResponse = Resource.success(listOf(secondFruit))
         val secondLiveDataResponse = MutableLiveData(secondFruitListResponse)
@@ -126,7 +127,7 @@ class FruitListFragmentTest {
 
         launchFragmentInContainer { FruitListFragment(mockFruitRepository) }
 
-        onView(withText(MockFruit.mockFruit.type))
+        onView(withText(MockFruit.mockFruit.type.capitalise()))
             .check(matches(isDisplayed()))
 
         onView(withId(R.id.btnRefresh))

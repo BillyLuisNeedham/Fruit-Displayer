@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.billyluisneedham.bbctest.databinding.ViewHolderFruitBinding
 import com.billyluisneedham.bbctest.models.Fruit
+import com.billyluisneedham.bbctest.utils.capitalise
 
 
 class FruitListAdapter : ListAdapter<Fruit, FruitListAdapter.FruitViewHolder>(FruitDiffUtil) {
@@ -25,7 +26,7 @@ class FruitListAdapter : ListAdapter<Fruit, FruitListAdapter.FruitViewHolder>(Fr
     class FruitViewHolder(private val binding: ViewHolderFruitBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(fruit: Fruit) {
-            binding.fruit = fruit
+            binding.tvFruit.text = fruit.type.capitalise()
         }
     }
 }
