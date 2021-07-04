@@ -54,18 +54,6 @@ class FruitDetailFragment : Fragment() {
         binding.tvPrice.text = getPriceMessage()
     }
 
-    private fun getPriceMessage(): String {
-        val priceMessage = requireContext().getString(PRICE_STRING)
-        val priceInPence = requireArguments().getInt(ARG_PRICE)
-        val priceInPounds = convertPenceToPounds(priceInPence.toDouble())
-        return "$priceMessage $priceInPounds"
-    }
-
-    private fun convertPenceToPounds(priceInPence: Double): String {
-        val n = NumberFormat.getCurrencyInstance(Locale.UK)
-        return n.format(priceInPence / 100)
-    }
-
     private fun getTypeFromArgs(): String {
         val type = requireArguments().getString(ARG_TYPE)
         return type?.capitalise() ?: throw IllegalStateException("$ARG_TYPE should not be null")
@@ -83,5 +71,17 @@ class FruitDetailFragment : Fragment() {
         val weight = requireArguments().getInt(ARG_WEIGHT)
         val convertedWeight = weight.toDouble() / 1000
         return convertedWeight.toString()
+    }
+
+    private fun getPriceMessage(): String {
+        val priceMessage = requireContext().getString(PRICE_STRING)
+        val priceInPence = requireArguments().getInt(ARG_PRICE)
+        val priceInPounds = convertPenceToPounds(priceInPence.toDouble())
+        return "$priceMessage $priceInPounds"
+    }
+
+    private fun convertPenceToPounds(priceInPence: Double): String {
+        val n = NumberFormat.getCurrencyInstance(Locale.UK)
+        return n.format(priceInPence / 100)
     }
 }

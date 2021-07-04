@@ -10,7 +10,8 @@ import com.billyluisneedham.bbctest.models.Fruit
 import com.billyluisneedham.bbctest.utils.capitalise
 
 
-class FruitListAdapter : ListAdapter<Fruit, FruitListAdapter.FruitViewHolder>(FruitDiffUtil) {
+class FruitListAdapter(private val callbacks: IFruitListViewHolderCallbacks) :
+    ListAdapter<Fruit, FruitListAdapter.FruitViewHolder>(FruitDiffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FruitViewHolder {
         return FruitViewHolder(
@@ -23,21 +24,29 @@ class FruitListAdapter : ListAdapter<Fruit, FruitListAdapter.FruitViewHolder>(Fr
         holder.bind(fruit)
     }
 
-    class FruitViewHolder(private val binding: ViewHolderFruitBinding) :
+    inner class FruitViewHolder(private val binding: ViewHolderFruitBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(fruit: Fruit) {
             binding.tvFruit.text = fruit.type.capitalise()
+            binding.cardViewHolder.setOnClickListener {
+                callbacks.onClickFruitViewHolder(fruit)
+            }
         }
     }
-}
 
-object FruitDiffUtil : DiffUtil.ItemCallback<Fruit>() {
 
-    override fun areItemsTheSame(oldItem: Fruit, newItem: Fruit): Boolean {
-        return oldItem.fruitId == newItem.fruitId
+    interface IFruitListViewHolderCallbacks {
+        fun onClickFruitViewHolder(fruit: Fruit)
     }
 
-    override fun areContentsTheSame(oldItem: Fruit, newItem: Fruit): Boolean {
-        return oldItem == newItem
+    object FruitDiffUtil : DiffUtil.ItemCallback<Fruit>() {
+
+        override fun areItemsTheSame(oldItem: Fruit, newItem: Fruit): Boolean {
+            return oldItem.fruitId == newItem.fruitId
+        }
+
+        override fun areContentsTheSame(oldItem: Fruit, newItem: Fruit): Boolean {
+            return oldItem == newItem
+        }
     }
 }

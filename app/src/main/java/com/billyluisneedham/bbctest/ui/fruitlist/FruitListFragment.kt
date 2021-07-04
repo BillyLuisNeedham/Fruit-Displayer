@@ -9,7 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.billyluisneedham.bbctest.R
 import com.billyluisneedham.bbctest.databinding.FragmentListBinding
+import com.billyluisneedham.bbctest.models.Fruit
 import com.billyluisneedham.bbctest.source.FruitRepository
+import com.billyluisneedham.bbctest.ui.fruitdetail.FruitDetailFragment
 import com.billyluisneedham.bbctest.utils.DependencyInjector
 import com.billyluisneedham.bbctest.utils.Resource
 
@@ -17,7 +19,7 @@ import com.billyluisneedham.bbctest.utils.Resource
 class FruitListFragment(
     // used for test injection
     private val fruitRepository: FruitRepository? = null
-) : Fragment() {
+) : Fragment(), FruitListAdapter.IFruitListViewHolderCallbacks {
 
     companion object {
         private const val ERROR_MESSAGE = R.string.error_message
@@ -55,7 +57,7 @@ class FruitListFragment(
     }
 
     private fun initRecyclerView() {
-        adapter = FruitListAdapter()
+        adapter = FruitListAdapter(this)
         binding.rvList.adapter = adapter
 
         observeFruitListInViewModel()
@@ -89,6 +91,13 @@ class FruitListFragment(
 
     private fun setLoadingUiIsVisible(isVisible: Boolean) {
         binding.loadingUi.isVisible = isVisible
+    }
+
+    override fun onClickFruitViewHolder(fruit: Fruit) {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .add(R.id.flMainActivity, FruitDetailFragment.newInstance(fruit))
+            .addToBackStack(null)
+            .commit()
     }
 
 
