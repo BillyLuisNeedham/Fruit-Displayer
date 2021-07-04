@@ -4,13 +4,16 @@ import androidx.lifecycle.LiveData
 import com.billyluisneedham.bbctest.models.Fruit
 import com.billyluisneedham.bbctest.source.local.ILocalFruitDataSource
 import com.billyluisneedham.bbctest.source.remote.IRemoteFruitDataSource
+import com.billyluisneedham.bbctest.source.remote.service.DiagnosticEvents
+import com.billyluisneedham.bbctest.source.remote.service.ISendDiagnosticManager
 import com.billyluisneedham.bbctest.utils.Resource
 import com.billyluisneedham.bbctest.utils.performGetOperation
 import com.billyluisneedham.bbctest.utils.toModel
 
 class FruitRepository(
     private val localFruitDataSource: ILocalFruitDataSource,
-    private val remoteFruitDataSource: IRemoteFruitDataSource
+    private val remoteFruitDataSource: IRemoteFruitDataSource,
+    private val sendDiagnosticManager: ISendDiagnosticManager
 ) {
 
     companion object {
@@ -20,12 +23,14 @@ class FruitRepository(
 
         fun getInstance(
             localFruitDataSource: ILocalFruitDataSource,
-            remoteFruitDataSource: IRemoteFruitDataSource
+            remoteFruitDataSource: IRemoteFruitDataSource,
+            sendDiagnosticManager: ISendDiagnosticManager
         ) = INSTANCE ?: synchronized(this) {
 
             INSTANCE ?: FruitRepository(
                 localFruitDataSource = localFruitDataSource,
-                remoteFruitDataSource = remoteFruitDataSource
+                remoteFruitDataSource = remoteFruitDataSource,
+                sendDiagnosticManager = sendDiagnosticManager
             ).also { INSTANCE = it }
         }
     }
@@ -37,6 +42,10 @@ class FruitRepository(
             val mappedResponse = fruitListResponse.fruits.map { it.toModel() }
             localFruitDataSource.saveFruits(mappedResponse)
         },
-        clearDatabaseCall = { localFruitDataSource.deleteAllFruits() }
+        clearDatabaseCall = { localFruitDataSource.deleteAllFruits() },
+        networkCallToSaveTimeMeasurement = {
+            sendDiagnosticManager.sendDiagnostics(DiagnosticEvents.Load, it.toString())
+        }
     )
+
 }
