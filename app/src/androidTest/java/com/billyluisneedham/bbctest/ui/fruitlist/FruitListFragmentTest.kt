@@ -3,8 +3,10 @@ package com.billyluisneedham.bbctest.ui.fruitlist
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.platform.app.InstrumentationRegistry
 import com.billyluisneedham.bbctest.R
 import com.billyluisneedham.bbctest.mocks.MockFruit
 import com.billyluisneedham.bbctest.models.Fruit
@@ -13,11 +15,19 @@ import com.billyluisneedham.bbctest.utils.Resource
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.hamcrest.CoreMatchers.not
+import org.junit.Before
 import org.junit.Test
 
 class FruitListFragmentTest {
 
     private val mockFruitRepository = mockk<FruitRepository>()
+    private lateinit var errorMessage: String
+
+    @Before
+    fun setUp() {
+        errorMessage =
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(R.string.error_message)
+    }
 
 
     @Test
@@ -98,6 +108,33 @@ class FruitListFragmentTest {
 
         onView(withId(R.id.tvErrorMsg))
             .check(matches(isDisplayed()))
-            .check(matches(withSubstring(testErrorMessage)))
+            .check(matches(withText("$errorMessage $testErrorMessage")))
+    }
+
+    @Test
+    fun refreshButton_refreshButtonClickedRepositoryReturnsDifferentDataOnSecondGetFruitCall_latestDataDisplayedInUi() {
+        val fruitListResponse = Resource.success(listOf(MockFruit.mockFruit))
+        val liveDataResponse = MutableLiveData(fruitListResponse)
+        val testType = "test type"
+        val secondFruit = MockFruit.mockFruit.copy(fruitId = 4, type = testType)
+        val secondFruitListResponse = Resource.success(listOf(secondFruit))
+        val secondLiveDataResponse = MutableLiveData(secondFruitListResponse)
+
+        coEvery {
+            mockFruitRepository.getFruits()
+        } returns liveDataResponse andThen secondLiveDataResponse
+
+        launchFragmentInContainer { FruitListFragment(mockFruitRepository) }
+
+        onView(withText(MockFruit.mockFruit.type))
+            .check(matches(isDisplayed()))
+
+        onView(withId(R.id.btnRefresh))
+            .perform(click())
+
+        onView(withText(testType))
+            .check(matches(isDisplayed()))
+
+
     }
 }

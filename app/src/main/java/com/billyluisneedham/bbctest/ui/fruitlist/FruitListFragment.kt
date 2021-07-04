@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.billyluisneedham.bbctest.R
 import com.billyluisneedham.bbctest.databinding.FragmentListBinding
 import com.billyluisneedham.bbctest.source.FruitRepository
 import com.billyluisneedham.bbctest.utils.DependencyInjector
@@ -17,6 +18,10 @@ class FruitListFragment(
     // used for test injection
     private val fruitRepository: FruitRepository? = null
 ) : Fragment() {
+
+    companion object {
+        private const val ERROR_MESSAGE = R.string.error_message
+    }
 
     private lateinit var binding: FragmentListBinding
     private lateinit var adapter: FruitListAdapter
@@ -38,8 +43,15 @@ class FruitListFragment(
         }
 
         initRecyclerView()
+        setOnClickOfRefreshButton()
 
         return binding.root
+    }
+
+    private fun setOnClickOfRefreshButton() {
+        binding.btnRefresh.setOnClickListener {
+            viewModel.refreshFruits()
+        }
     }
 
     private fun initRecyclerView() {
@@ -65,9 +77,11 @@ class FruitListFragment(
     }
 
     private fun setErrorUiVisibilityAndMessage(isVisible: Boolean, message: String?) {
+        val errorMessage = requireContext().getString(ERROR_MESSAGE)
+
         binding.tvErrorMsg.apply {
             this.isVisible = isVisible
-            text = message
+            "$errorMessage $message".also { text = it }
         }
 
     }

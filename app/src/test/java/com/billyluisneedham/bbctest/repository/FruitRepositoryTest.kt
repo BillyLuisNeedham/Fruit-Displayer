@@ -1,7 +1,6 @@
 package com.billyluisneedham.bbctest.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
 import com.billyluisneedham.bbctest.mocks.MockFruit
 import com.billyluisneedham.bbctest.source.FruitRepository
 import com.billyluisneedham.bbctest.source.local.database.FruitDao
@@ -11,6 +10,7 @@ import com.billyluisneedham.bbctest.utils.toModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -28,33 +28,14 @@ class FruitRepositoryTest {
     private val mockFruits = listOf(MockFruit.mockFruit)
 
     @Test
-    fun getAllFruitInsertsFruitsFromRemoteServiceToLocalDb() {
-        runBlocking {
-            val mappedFruitResponse = MockFruit.mockFruitListResponse.fruits.map {
-                it.toModel()
-            }
-            initMocksForSuccessfulFetch()
-            initFruitRepositoryForTest()
-
-
-            fruitRepository.getFruits()
-
-            coVerify(exactly = 1) {
-                mockDao.saveFruits(mappedFruitResponse)
-            }
-
-        }
-    }
-
-    @Test
-    fun getAllFruitCallsReturnsLiveDataOfListOfFruitFromDb_returnedSuccessfully_() {
+    fun getAllFruitCallsReturnsLiveDataOfResourceListOfFruitFromDb_returnedSuccessfully_ResourceSuccessfulWithCorrectData() {
         runBlocking {
             initMocksForSuccessfulFetch()
             initFruitRepositoryForTest()
+            val result = fruitRepository.getFruits()
 
-            val response = fruitRepository.getFruits().value
-
-            assertThat(response, `is`(mockFruits))
+            val expectedResult = Resource.success(mockFruits)
+            assertThat(result.value, `is`(expectedResult))
         }
     }
 
@@ -82,19 +63,50 @@ class FruitRepositoryTest {
     }
 
     private fun initMockSuccessfulLocalDataSourceFetch() {
-        val mockFruitLiveData = MutableLiveData(mockFruits)
+        val flow = flow {
+            emit(mockFruits)
+        }
 
         coEvery {
             mockDao.getAllFruits()
-        } returns mockFruitLiveData
+        } returns flow
     }
 
     private fun initMockSuccessfulRemoteDataSourceFetch() {
-
         coEvery {
             mockRemoteDataSource.getFruits()
         } returns Resource.success(MockFruit.mockFruitListResponse)
+    }
 
+
+    @Test
+    fun getAllFruitInsertsFruitsFromRemoteServiceToLocalDb() {
+        runBlocking {
+            val mappedFruitResponse = MockFruit.mockFruitListResponse.fruits.map {
+                it.toModel()
+            }
+            initMocksForSuccessfulFetch()
+            initFruitRepositoryForTest()
+
+
+            fruitRepository.getFruits()
+
+            coVerify(exactly = 1) {
+                mockDao.saveFruits(mappedFruitResponse)
+            }
+
+        }
+    }
+
+    @Test
+    fun refreshFruits_fetchesFromAPIClearsLocalDBAndSavesResult_expectedCallsMadeWithExpectedParams() {
+        runBlocking {
+            initMocksForSuccessfulFetch()
+            initFruitRepositoryForTest()
+
+            //TODO get working
+            coVerify {  }
+        }
     }
 
 }
