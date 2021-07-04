@@ -18,5 +18,5 @@ interface FruitDao: ILocalFruitDataSource {
     override fun getAllFruits(): Flow<List<Fruit>>
 
     @Query("DELETE From Fruit")
-    suspend fun deleteAll()
+    override suspend fun deleteAllFruits()
 }

@@ -9,4 +9,6 @@ interface ILocalFruitDataSource {
     fun getAllFruits(): Flow<List<Fruit>>
 
     suspend fun saveFruits(fruits: List<Fruit>)
+
+    suspend fun deleteAllFruits()
 }
