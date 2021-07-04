@@ -59,7 +59,7 @@ class FruitDatabaseTest {
         assertThat(tableSizePostInsert, `is`(1))
 
         //delete table and confirm the size returns to empty
-        fruitDao.deleteAll()
+        fruitDao.deleteAllFruits()
         val tableSizePostDelete: Int = fruitDao.getAllFruits().first().size
         assertThat(tableSizePostDelete, `is`(0))
 

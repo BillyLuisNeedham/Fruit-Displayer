@@ -1,16 +1,21 @@
 package com.billyluisneedham.bbctest.ui.fruitlist
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
+import com.billyluisneedham.bbctest.models.Fruit
 import com.billyluisneedham.bbctest.source.FruitRepository
+import com.billyluisneedham.bbctest.utils.Resource
 
 class FruitListViewModel(private val fruitRepository: FruitRepository) : ViewModel() {
 
-    companion object {
-        private const val TAG = "FruitListViewModel"
+    private val loadTrigger = MutableLiveData(Unit)
+
+    var fruitList: LiveData<Resource<List<Fruit>>> = loadTrigger.switchMap {
+        fruitRepository.getFruits()
     }
 
-
+    fun refreshFruits() {
+        loadTrigger.value = Unit
+    }
 
     class Factory(private val fruitRepository: FruitRepository) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
@@ -20,3 +25,5 @@ class FruitListViewModel(private val fruitRepository: FruitRepository) : ViewMod
     }
 
 }
+
+
