@@ -36,8 +36,7 @@ class FruitRepository(
         saveCallResult = { fruitListResponse ->
             val mappedResponse = fruitListResponse.fruits.map { it.toModel() }
             localFruitDataSource.saveFruits(mappedResponse)
-        }
+        },
+        clearDatabaseCall = { localFruitDataSource.deleteAllFruits() }
     )
-
-
 }
