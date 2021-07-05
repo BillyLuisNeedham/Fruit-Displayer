@@ -9,11 +9,14 @@ import com.billyluisneedham.bbctest.source.remote.service.ISendDiagnosticManager
 import com.billyluisneedham.bbctest.utils.Resource
 import com.billyluisneedham.bbctest.utils.performGetOperation
 import com.billyluisneedham.bbctest.utils.toModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 class FruitRepository(
     private val localFruitDataSource: ILocalFruitDataSource,
     private val remoteFruitDataSource: IRemoteFruitDataSource,
-    private val sendDiagnosticManager: ISendDiagnosticManager
+    private val sendDiagnosticManager: ISendDiagnosticManager,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
 
     companion object {
@@ -45,7 +48,8 @@ class FruitRepository(
         clearDatabaseCall = { localFruitDataSource.deleteAllFruits() },
         networkCallToSaveTimeMeasurement = {
             sendDiagnosticManager.sendDiagnostics(DiagnosticEvents.Load, it.toString())
-        }
+        },
+        dispatcher = dispatcher
     )
 
 }

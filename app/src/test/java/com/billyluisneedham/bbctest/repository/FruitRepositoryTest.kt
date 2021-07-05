@@ -1,48 +1,71 @@
 package com.billyluisneedham.bbctest.repository
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.asFlow
 import com.billyluisneedham.bbctest.mocks.MockFruit
 import com.billyluisneedham.bbctest.source.FruitRepository
 import com.billyluisneedham.bbctest.source.local.database.FruitDao
 import com.billyluisneedham.bbctest.source.remote.RemoteFruitDataSource
+import com.billyluisneedham.bbctest.source.remote.service.DiagnosticEvents
+import com.billyluisneedham.bbctest.source.remote.service.SendDiagnosticManager
+import com.billyluisneedham.bbctest.testutils.CoroutineTestRule
 import com.billyluisneedham.bbctest.utils.Resource
 import com.billyluisneedham.bbctest.utils.toModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Rule
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class FruitRepositoryTest {
 
     @get:Rule
-    val rule = InstantTaskExecutorRule()
+    val coroutinesTestRule = CoroutineTestRule()
+
+//    @get:Rule
+//    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val mockRemoteDataSource = mockk<RemoteFruitDataSource>()
     private val mockDao = mockk<FruitDao>()
-    private lateinit var fruitRepository: FruitRepository
+    private val mockDiagnosticManager = mockk<SendDiagnosticManager>()
     private val mockFruits = listOf(MockFruit.mockFruit)
+
 
     @Test
     fun getAllFruitCallsReturnsLiveDataOfResourceListOfFruitFromDb_returnedSuccessfully_ResourceSuccessfulWithCorrectData() {
         runBlocking {
+//        coroutinesTestRule.testDispatcher.runBlockingTest {
+//            val job = launch {
             initMocksForSuccessfulFetch()
-            initFruitRepositoryForTest()
+            val fruitRepository = initFruitRepositoryForTest()
             val result = fruitRepository.getFruits()
-
+            result.observeForever {}
             val expectedResult = Resource.success(mockFruits)
             assertThat(result.value, `is`(expectedResult))
+
+
         }
+//        }
+
+//            job.cancel()
+//    }
     }
 
-    private fun initFruitRepositoryForTest() {
-        fruitRepository = FruitRepository(
+    private fun initFruitRepositoryForTest(): FruitRepository {
+        return FruitRepository(
             localFruitDataSource = mockDao,
-            remoteFruitDataSource = mockRemoteDataSource
+            remoteFruitDataSource = mockRemoteDataSource,
+            sendDiagnosticManager = mockDiagnosticManager,
+            dispatcher = Dispatchers.Main
         )
     }
 
@@ -50,6 +73,20 @@ class FruitRepositoryTest {
         initMockSuccessfulRemoteDataSourceFetch()
         initMockSuccessfulLocalDataSourceFetch()
         initMockSuccessfulSaveOfFruitInLocalDataSource()
+        initMockSuccessfulDeleteOfDb()
+        initMockForSendDiagnostics()
+    }
+
+    private fun initMockForSendDiagnostics() {
+        coEvery {
+            mockDiagnosticManager.sendDiagnostics(event = DiagnosticEvents.Load, data = any())
+        } returns Unit
+    }
+
+    private fun initMockSuccessfulDeleteOfDb() {
+        coEvery {
+            mockDao.deleteAllFruits()
+        } returns Unit
     }
 
     private fun initMockSuccessfulSaveOfFruitInLocalDataSource() {
@@ -78,35 +115,38 @@ class FruitRepositoryTest {
         } returns Resource.success(MockFruit.mockFruitListResponse)
     }
 
-
     @Test
-    fun getAllFruitInsertsFruitsFromRemoteServiceToLocalDb() {
-        runBlocking {
-            val mappedFruitResponse = MockFruit.mockFruitListResponse.fruits.map {
-                it.toModel()
+    fun remoteService_getAllFruitInsertsFruitsFromRemoteServiceToLocalDb_listFromRemoteServiceSavedInDb() {
+        runBlockingTest {
+            val job = launch {
+
+                val mappedFruitResponse = MockFruit.mockFruitListResponse.fruits.map {
+                    it.toModel()
+                }
+                initMocksForSuccessfulFetch()
+                val fruitRepository = initFruitRepositoryForTest()
+
+
+                fruitRepository.getFruits().asFlow().last()
+
+                coVerify(exactly = 1) {
+                    mockDao.saveFruits(mappedFruitResponse)
+                }
             }
-            initMocksForSuccessfulFetch()
-            initFruitRepositoryForTest()
-
-
-            fruitRepository.getFruits()
-
-            coVerify(exactly = 1) {
-                mockDao.saveFruits(mappedFruitResponse)
-            }
-
+            job.cancel()
         }
     }
 
     @Test
-    fun refreshFruits_fetchesFromAPIClearsLocalDBAndSavesResult_expectedCallsMadeWithExpectedParams() {
-        runBlocking {
-            initMocksForSuccessfulFetch()
-            initFruitRepositoryForTest()
+    fun networkCallToSaveTimeMeasurement_mockNetworkCallTakesSetAmountOfTime_diagnosticsSentWithCorrectTime() {
+        runBlockingTest {
+            val job = launch {
 
-            //TODO get working
-            coVerify {  }
+
+            }
+
+            job.cancel()
         }
     }
-
 }
+
