@@ -2,6 +2,7 @@ package com.billyluisneedham.bbctest.ui
 
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.billyluisneedham.bbctest.R
@@ -16,15 +17,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var sendDiagnosticManager: SendDiagnosticManager
+    private val diagnosticViewModel: DiagnosticViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        sendDiagnosticManager = SendDiagnosticManager.newInstance(DependencyInjector.provideService())
+        sendDiagnosticManager =
+            SendDiagnosticManager.newInstance(DependencyInjector.provideService())
         sendDiagnosticManager.setUiRequestTimeStamp(timeStamp = System.currentTimeMillis())
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         supportFragmentManager.beginTransaction()
             .add(R.id.flMainActivity, FruitListFragment()).commit()
+
+        observeOnUiDrawn()
+    }
+
+    private fun observeOnUiDrawn() {
+        diagnosticViewModel.onUiDrawnTimeStamp.observe(this, {
+            onUiDrawn(it)
+        })
     }
 
     override fun onBackPressed() {

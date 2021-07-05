@@ -3,7 +3,6 @@ package com.billyluisneedham.bbctest.utils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.liveData
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlin.system.measureTimeMillis
@@ -13,9 +12,10 @@ fun <T, A> performGetOperation(
     networkCall: suspend () -> Resource<A>,
     saveCallResult: suspend (A) -> Unit,
     clearDatabaseCall: suspend () -> Unit,
-    networkCallToSaveTimeMeasurement: suspend (Long) -> Unit
+    networkCallToSaveTimeMeasurement: suspend (Long) -> Unit,
+    dispatcher: IDispatcherProvider = DefaultDispatcherProvider()
 ): LiveData<Resource<T>> =
-    liveData(Dispatchers.IO) {
+    liveData(dispatcher.io()) {
         emit(Resource.loading())
         val source = databaseQuery.invoke().map { Resource.success(it) }
         emitSource(source.asLiveData())
