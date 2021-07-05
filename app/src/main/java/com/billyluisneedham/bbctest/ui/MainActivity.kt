@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    fun onUiDrawn(timeStampOfDraw: Long) {
+    private fun onUiDrawn(timeStampOfDraw: Long) {
         lifecycleScope.launch {
             try {
                 sendDiagnosticManager.onUiDrawCompleteSendDiagnostics(timeStampOfDraw)
