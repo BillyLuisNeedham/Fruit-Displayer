@@ -1,6 +1,5 @@
 package com.billyluisneedham.bbctest.repository
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.asFlow
 import com.billyluisneedham.bbctest.mocks.MockFruit
 import com.billyluisneedham.bbctest.source.FruitRepository
@@ -14,14 +13,15 @@ import com.billyluisneedham.bbctest.utils.toModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 
@@ -31,34 +31,33 @@ class FruitRepositoryTest {
     @get:Rule
     val coroutinesTestRule = CoroutineTestRule()
 
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
+//    @get:Rule
+//    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val mockRemoteDataSource = mockk<RemoteFruitDataSource>()
     private val mockDao = mockk<FruitDao>()
     private val mockDiagnosticManager = mockk<SendDiagnosticManager>()
     private val mockFruits = listOf(MockFruit.mockFruit)
 
-    @After
-    fun cleanUp() {
-        coroutinesTestRule.testDispatcher.cleanupTestCoroutines()
-    }
 
     @Test
     fun getAllFruitCallsReturnsLiveDataOfResourceListOfFruitFromDb_returnedSuccessfully_ResourceSuccessfulWithCorrectData() {
-        runBlockingTest {
-            val job = launch {
+        runBlocking {
+//        coroutinesTestRule.testDispatcher.runBlockingTest {
+//            val job = launch {
+            initMocksForSuccessfulFetch()
+            val fruitRepository = initFruitRepositoryForTest()
+            val result = fruitRepository.getFruits()
+            result.observeForever {}
+            val expectedResult = Resource.success(mockFruits)
+            assertThat(result.value, `is`(expectedResult))
 
-                initMocksForSuccessfulFetch()
-                val fruitRepository = initFruitRepositoryForTest()
-                val result = fruitRepository.getFruits().asFlow().last()
 
-                val expectedResult = Resource.success(mockFruits)
-                assertThat(result, `is`(expectedResult))
-            }
-
-            job.cancel()
         }
+//        }
+
+//            job.cancel()
+//    }
     }
 
     private fun initFruitRepositoryForTest(): FruitRepository {
@@ -66,7 +65,7 @@ class FruitRepositoryTest {
             localFruitDataSource = mockDao,
             remoteFruitDataSource = mockRemoteDataSource,
             sendDiagnosticManager = mockDiagnosticManager,
-            dispatcher = coroutinesTestRule.testDispatcher
+            dispatcher = Dispatchers.Main
         )
     }
 
@@ -135,8 +134,19 @@ class FruitRepositoryTest {
                 }
             }
             job.cancel()
-
         }
     }
 
+    @Test
+    fun networkCallToSaveTimeMeasurement_mockNetworkCallTakesSetAmountOfTime_diagnosticsSentWithCorrectTime() {
+        runBlockingTest {
+            val job = launch {
+
+
+            }
+
+            job.cancel()
+        }
+    }
 }
+
