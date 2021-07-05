@@ -26,7 +26,7 @@ class FruitApplication : Application() {
 
     private fun setupCrashHandler() {
 
-        Thread.setDefaultUncaughtExceptionHandler { t, e ->
+        Thread.setDefaultUncaughtExceptionHandler { _, e ->
             try {
                 runBlocking {
 
