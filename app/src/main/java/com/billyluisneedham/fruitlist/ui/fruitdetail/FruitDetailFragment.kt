@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import com.billyluisneedham.fruitlist.R
 import com.billyluisneedham.fruitlist.databinding.FragmentDetailBinding
 import com.billyluisneedham.fruitlist.models.Fruit
@@ -42,10 +43,16 @@ class FruitDetailFragment : DiagnosticFragment() {
             lifecycleOwner = viewLifecycleOwner
             binding = this
         }
-
+        initToolBar()
         setUiDetailsFromArguments()
 
         return binding.root
+    }
+
+    private fun initToolBar() {
+      if  (activity is AppCompatActivity){
+          (activity as AppCompatActivity).setSupportActionBar(binding.toolbarDetail)
+      }
     }
 
     private fun setUiDetailsFromArguments() {

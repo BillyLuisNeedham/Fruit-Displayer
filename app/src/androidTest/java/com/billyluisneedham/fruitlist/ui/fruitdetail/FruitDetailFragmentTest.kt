@@ -4,8 +4,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.billyluisneedham.fruitlist.R
 import com.billyluisneedham.fruitlist.mocks.MockFruit
@@ -40,8 +39,8 @@ class FruitDetailFragmentTest {
     fun fruitType_typePassedViaArgs_displaysCapitalisedTypeOfFruitPassedByArgs() {
         initFragmentForTests()
 
-        onView(withText(MockFruit.mockFruit.type.capitalise()))
-            .check(matches(isDisplayed()))
+        onView(withId(R.id.tvFruitType))
+            .check(matches(withText(MockFruit.mockFruit.type.capitalise())))
     }
 
     private fun initFragmentForTests() {
