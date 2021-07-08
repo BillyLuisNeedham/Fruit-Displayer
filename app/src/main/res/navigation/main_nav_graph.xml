@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/fruitListFragment">
+
+    <fragment
+        android:id="@+id/fruitListFragment"
+        android:name="com.billyluisneedham.fruitlist.ui.fruitlist.FruitListFragment"
+        android:label="FruitListFragment" >
+        <action
+            android:id="@+id/action_fruitListFragment_to_fruitDetailFragment"
+            app:destination="@id/fruitDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fruitDetailFragment"
+        android:name="com.billyluisneedham.fruitlist.ui.fruitdetail.FruitDetailFragment"
+        android:label="FruitDetailFragment">
+        <argument
+            android:name="type"
+            app:argType="string" />
+        <argument
+            android:name="price"
+            app:argType="integer" />
+        <argument
+            android:name="weight"
+            app:argType="integer" />
+    </fragment>
+</navigation>
