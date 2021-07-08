@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.billyluisneedham.fruitlist.R
 import com.billyluisneedham.fruitlist.source.remote.service.SendDiagnosticManager
-import com.billyluisneedham.fruitlist.ui.fruitlist.FruitListFragment
 import com.billyluisneedham.fruitlist.utils.DependencyInjector
 import kotlinx.coroutines.launch
 
@@ -20,16 +19,23 @@ class MainActivity : AppCompatActivity() {
     private val diagnosticViewModel: DiagnosticViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        sendDiagnosticManager =
-            SendDiagnosticManager.newInstance(DependencyInjector.provideService())
-        sendDiagnosticManager.setUiRequestTimeStamp(timeStamp = System.currentTimeMillis())
+        initSendDiagnosticManager()
+        setUiRequestTimeAsNowInSendDiagnosticManager()
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        supportFragmentManager.beginTransaction()
-            .add(R.id.flMainActivity, FruitListFragment()).commit()
 
         observeOnUiDrawn()
+    }
+
+    private fun setUiRequestTimeAsNowInSendDiagnosticManager() {
+        sendDiagnosticManager.setUiRequestTimeStamp(timeStamp = System.currentTimeMillis())
+    }
+
+    private fun initSendDiagnosticManager() {
+        sendDiagnosticManager =
+            SendDiagnosticManager.newInstance(DependencyInjector.provideService())
     }
 
     private fun observeOnUiDrawn() {
