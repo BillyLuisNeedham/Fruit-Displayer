@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.billyluisneedham.fruitlist.R
 import com.billyluisneedham.fruitlist.databinding.FragmentListBinding
 import com.billyluisneedham.fruitlist.models.Fruit
 import com.billyluisneedham.fruitlist.source.FruitRepository
 import com.billyluisneedham.fruitlist.ui.DiagnosticFragment
 import com.billyluisneedham.fruitlist.ui.MainActivity
-import com.billyluisneedham.fruitlist.ui.fruitdetail.FruitDetailFragment
 import com.billyluisneedham.fruitlist.utils.DependencyInjector
 import com.billyluisneedham.fruitlist.utils.Resource
 
@@ -95,12 +95,16 @@ class FruitListFragment(
     }
 
     override fun onClickFruitViewHolder(fruit: Fruit) {
+        //TODO refactor to make more abstract
         (requireActivity() as MainActivity).onRequestChangeOfUi(System.currentTimeMillis())
 
-        requireActivity().supportFragmentManager.beginTransaction()
-            .add(R.id.flMainActivity, FruitDetailFragment.newInstance(fruit))
-            .addToBackStack(null)
-            .commit()
+        findNavController().navigate(
+            FruitListFragmentDirections.actionFruitListFragmentToFruitDetailFragment(
+                fruit.type,
+                fruit.price,
+                fruit.weight
+            )
+        )
     }
 
 
