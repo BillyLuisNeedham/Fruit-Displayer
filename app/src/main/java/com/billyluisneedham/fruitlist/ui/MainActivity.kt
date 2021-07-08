@@ -20,16 +20,29 @@ class MainActivity : AppCompatActivity() {
     private val diagnosticViewModel: DiagnosticViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        sendDiagnosticManager =
-            SendDiagnosticManager.newInstance(DependencyInjector.provideService())
-        sendDiagnosticManager.setUiRequestTimeStamp(timeStamp = System.currentTimeMillis())
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        initSendDiagnosticManager()
+        setCurrentTimeInSendDiagnosticManager()
 
-        supportFragmentManager.beginTransaction()
-            .add(R.id.flMainActivity, FruitListFragment()).commit()
+        super.onCreate(savedInstanceState)
+
+        setContentView(R.layout.activity_main)
+        displayFirstFragment()
 
         observeOnUiDrawn()
+    }
+
+    private fun displayFirstFragment() {
+        supportFragmentManager.beginTransaction()
+            .add(R.id.flMainActivity, FruitListFragment()).commit()
+    }
+
+    private fun setCurrentTimeInSendDiagnosticManager() {
+        sendDiagnosticManager.setUiRequestTimeStamp(timeStamp = System.currentTimeMillis())
+    }
+
+    private fun initSendDiagnosticManager() {
+        sendDiagnosticManager =
+            SendDiagnosticManager.newInstance(DependencyInjector.provideService())
     }
 
     private fun observeOnUiDrawn() {
