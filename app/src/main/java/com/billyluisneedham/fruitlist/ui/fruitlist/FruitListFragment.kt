@@ -95,7 +95,6 @@ class FruitListFragment(
     }
 
     override fun onClickFruitViewHolder(fruit: Fruit) {
-        //TODO refactor to make more abstract
         (requireActivity() as MainActivity).onRequestChangeOfUi(System.currentTimeMillis())
 
         findNavController().navigate(
