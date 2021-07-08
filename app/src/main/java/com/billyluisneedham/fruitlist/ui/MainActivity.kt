@@ -27,8 +27,13 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
         displayFirstFragment()
+        hideAppBar()
 
         observeOnUiDrawn()
+    }
+
+    private fun hideAppBar() {
+        supportActionBar?.hide()
     }
 
     private fun displayFirstFragment() {
