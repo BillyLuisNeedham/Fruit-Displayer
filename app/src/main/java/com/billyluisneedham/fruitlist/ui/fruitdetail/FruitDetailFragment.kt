@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.navArgs
 import com.billyluisneedham.fruitlist.R
 import com.billyluisneedham.fruitlist.databinding.FragmentDetailBinding
-import com.billyluisneedham.fruitlist.models.Fruit
 import com.billyluisneedham.fruitlist.ui.DiagnosticFragment
 import com.billyluisneedham.fruitlist.utils.capitalise
 import java.text.NumberFormat
@@ -18,19 +18,9 @@ class FruitDetailFragment : DiagnosticFragment() {
         private const val WEIGHT_STRING = R.string.weight
         private const val KG = R.string.kg
         private const val PRICE_STRING = R.string.price
-        const val ARG_TYPE = "arg_type"
-        const val ARG_PRICE = "arg_price"
-        const val ARG_WEIGHT = "arg_weight"
-
-        fun newInstance(fruit: Fruit) = FruitDetailFragment().apply {
-            arguments = Bundle().apply {
-                putString(ARG_TYPE, fruit.type)
-                putInt(ARG_PRICE, fruit.price)
-                putInt(ARG_WEIGHT, fruit.weight)
-            }
-        }
     }
 
+    private val args: FruitDetailFragmentArgs by navArgs()
     private lateinit var binding: FragmentDetailBinding
 
     override fun onCreateView(
@@ -49,14 +39,9 @@ class FruitDetailFragment : DiagnosticFragment() {
     }
 
     private fun setUiDetailsFromArguments() {
-        binding.tvFruitType.text = getTypeFromArgs()
+        binding.tvFruitType.text = args.type.capitalise()
         binding.tvWeight.text = getWeightMessage()
         binding.tvPrice.text = getPriceMessage()
-    }
-
-    private fun getTypeFromArgs(): String {
-        val type = requireArguments().getString(ARG_TYPE)
-        return type?.capitalise() ?: throw IllegalStateException("$ARG_TYPE should not be null")
     }
 
     private fun getWeightMessage(): String {
@@ -68,14 +53,14 @@ class FruitDetailFragment : DiagnosticFragment() {
     }
 
     private fun getWeightInKgFromArgs(): String {
-        val weight = requireArguments().getInt(ARG_WEIGHT)
+        val weight = args.weight
         val convertedWeight = weight.toDouble() / 1000
         return convertedWeight.toString()
     }
 
     private fun getPriceMessage(): String {
         val priceMessage = requireContext().getString(PRICE_STRING)
-        val priceInPence = requireArguments().getInt(ARG_PRICE)
+        val priceInPence = args.price
         val priceInPounds = convertPenceToPounds(priceInPence.toDouble())
         return "$priceMessage $priceInPounds"
     }

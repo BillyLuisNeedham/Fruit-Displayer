@@ -9,9 +9,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.billyluisneedham.fruitlist.R
 import com.billyluisneedham.fruitlist.mocks.MockFruit
-import com.billyluisneedham.fruitlist.ui.fruitdetail.FruitDetailFragment.Companion.ARG_PRICE
-import com.billyluisneedham.fruitlist.ui.fruitdetail.FruitDetailFragment.Companion.ARG_TYPE
-import com.billyluisneedham.fruitlist.ui.fruitdetail.FruitDetailFragment.Companion.ARG_WEIGHT
 import com.billyluisneedham.fruitlist.utils.capitalise
 import org.junit.Before
 import org.junit.Test
@@ -20,9 +17,9 @@ import java.util.*
 
 class FruitDetailFragmentTest {
     private val fragmentArgs = bundleOf(
-        ARG_TYPE to MockFruit.mockFruit.type,
-        ARG_PRICE to MockFruit.mockFruit.price,
-        ARG_WEIGHT to MockFruit.mockFruit.weight
+        "type" to MockFruit.mockFruit.type,
+        "price" to MockFruit.mockFruit.price,
+        "weight" to MockFruit.mockFruit.weight
     )
     private lateinit var weightMessage: String
     private lateinit var priceMessage: String
