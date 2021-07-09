@@ -10,17 +10,13 @@ import androidx.navigation.fragment.findNavController
 import com.billyluisneedham.fruitlist.R
 import com.billyluisneedham.fruitlist.databinding.FragmentListBinding
 import com.billyluisneedham.fruitlist.models.Fruit
-import com.billyluisneedham.fruitlist.source.FruitRepository
 import com.billyluisneedham.fruitlist.ui.DiagnosticFragment
 import com.billyluisneedham.fruitlist.ui.MainActivity
-import com.billyluisneedham.fruitlist.utils.DependencyInjector
 import com.billyluisneedham.fruitlist.utils.Resource
+import dagger.hilt.android.AndroidEntryPoint
 
-
-class FruitListFragment(
-    // used for test injection
-    private val fruitRepository: FruitRepository? = null
-) : DiagnosticFragment(), FruitListAdapter.IFruitListViewHolderCallbacks {
+@AndroidEntryPoint
+class FruitListFragment: DiagnosticFragment(), FruitListAdapter.IFruitListViewHolderCallbacks {
 
     companion object {
         private const val ERROR_MESSAGE = R.string.error_message
@@ -28,12 +24,7 @@ class FruitListFragment(
 
     private lateinit var binding: FragmentListBinding
     private lateinit var adapter: FruitListAdapter
-    private val viewModel: FruitListViewModel by viewModels {
-        FruitListViewModel.Factory(
-            fruitRepository
-                ?: DependencyInjector.provideFruitRepository(requireContext())
-        )
-    }
+    private val viewModel: FruitListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
