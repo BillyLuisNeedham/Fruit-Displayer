@@ -4,25 +4,30 @@ import android.app.Application
 import android.util.Log
 import com.billyluisneedham.fruitlist.source.remote.service.DiagnosticEvents
 import com.billyluisneedham.fruitlist.source.remote.service.SendDiagnosticManager
-import com.billyluisneedham.fruitlist.utils.DependencyInjector
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 import kotlin.system.exitProcess
 
+@HiltAndroidApp
 class FruitApplication : Application() {
 
     companion object {
         private const val TAG = "FruitApplication"
     }
 
-    private lateinit var sendDiagnosticManager: SendDiagnosticManager
+    @Inject
+    lateinit var sendDiagnosticManager: SendDiagnosticManager
 
     override fun onCreate() {
         super.onCreate()
-        sendDiagnosticManager =
-            SendDiagnosticManager.newInstance(DependencyInjector.provideService())
+        setUiRequestTimeAsNowInSendDiagnosticManager()
         setupCrashHandler()
     }
 
+    private fun setUiRequestTimeAsNowInSendDiagnosticManager() {
+        sendDiagnosticManager.setUiRequestTimeStamp(timeStamp = System.currentTimeMillis())
+    }
 
     private fun setupCrashHandler() {
 

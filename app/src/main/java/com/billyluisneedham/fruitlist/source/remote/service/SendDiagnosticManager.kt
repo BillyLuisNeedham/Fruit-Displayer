@@ -1,18 +1,12 @@
 package com.billyluisneedham.fruitlist.source.remote.service
 
 import android.util.Log
+import javax.inject.Inject
 
-class SendDiagnosticManager(private val service: Service) : ISendDiagnosticManager {
+class SendDiagnosticManager@Inject constructor(private val service: Service) : ISendDiagnosticManager {
 
     companion object {
         private const val TAG = "SendDiagnosticManager"
-
-        @Volatile
-        private var INSTANCE: SendDiagnosticManager? = null
-        fun newInstance(service: Service) = INSTANCE ?: synchronized(this) {
-
-            INSTANCE ?: SendDiagnosticManager(service).also { INSTANCE = it }
-        }
     }
 
     private var uiRequestTimeStamp: Long? = null
