@@ -1,11 +1,17 @@
 package com.billyluisneedham.fruitlist.ui.fruitlist
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
 import com.billyluisneedham.fruitlist.models.Fruit
 import com.billyluisneedham.fruitlist.source.FruitRepository
 import com.billyluisneedham.fruitlist.utils.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class FruitListViewModel(private val fruitRepository: FruitRepository) : ViewModel() {
+@HiltViewModel
+class FruitListViewModel @Inject constructor(private val fruitRepository: FruitRepository) : ViewModel() {
 
     private val loadTrigger = MutableLiveData(Unit)
 
@@ -15,13 +21,6 @@ class FruitListViewModel(private val fruitRepository: FruitRepository) : ViewMod
 
     fun refreshFruits() {
         loadTrigger.value = Unit
-    }
-
-    class Factory(private val fruitRepository: FruitRepository) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return FruitListViewModel(fruitRepository) as T
-        }
     }
 
 }
