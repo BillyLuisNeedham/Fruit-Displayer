@@ -9,9 +9,11 @@ import com.billyluisneedham.fruitlist.R
 import com.billyluisneedham.fruitlist.databinding.FragmentDetailBinding
 import com.billyluisneedham.fruitlist.ui.DiagnosticFragment
 import com.billyluisneedham.fruitlist.utils.capitalise
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.NumberFormat
 import java.util.*
 
+@AndroidEntryPoint
 class FruitDetailFragment : DiagnosticFragment() {
 
     companion object {
